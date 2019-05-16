@@ -95,9 +95,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 		//printf("\tmwslist, head: %p, next: %p\n", ws->events.head, ws->events.head == NULL ? NULL : ws->events.head);
 		return 0;
 	} else if (Message == WM_CLOSE) {
+		printf("MAIN WM_CLOSE\n");
 		if (ws->event_flags & F_MWS_CLOSE_WINDOW) {
+			printf("ADDING WM_CLOSE TO EVENTS LIST\n");
 			mwslist_add(&(ws->events), create_full_mwsevent(MWS_CLOSE_WINDOW, Message, wParam, lParam));
 		} else {
+			printf("DOING WM_CLOSE DEFAULT");
 			window_state_do_event_default(ws, create_full_mwsevent(MWS_CLOSE_WINDOW, Message, wParam, lParam));
 		}
 		return 0;
@@ -271,7 +274,9 @@ MWS_EVENT get_window_state_event (WINDOW_STATE* wstate) {
 }
 void window_state_do_event_default (WINDOW_STATE* wstate, MWS_EVENT evt) {
 	if (evt.type != MWS_NONE) {
+		printf("DEFAULT EVENT HANDLER %d\n", evt.raw->Message);
 		if (evt.raw->Message == WM_CLOSE) {
+			printf("\tEVENT DEFAULT WM_CLOSE\n");
 			DestroyWindow(wstate->hwnd);
 			wstate->should_end = true;
 			// WM_DESTROY is handled in wndproc

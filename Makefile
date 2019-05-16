@@ -32,7 +32,7 @@ start-windows-gdi: build-windows-gdi
 
 build-windows-gdi : clean
 	mkdir build
-	$(windows_compiler) -mwindows -DM_WINDOW_STATE_W32_GDI -o $(build_output).exe $(windows_gdi_files) -luser32 -lkernel32 -lusp10 -lgdi32 -lcomctl32 -luxtheme -lmsimg32 -lcomdlg32 -ld2d1 -ldwrite -lole32 -loleaut32 -loleacc -luuid
+	$(windows_compiler) -mwindows -DM_WINDOW_STATE_W32_GDI -o $(build_output).exe $(windows_gdi_files) -luser32 -lkernel32 -lusp10 -lgdi32 -lcomctl32 -luxtheme -lmsimg32 -lcomdlg32 -lole32 -loleaut32 -loleacc -luuid
 	cp -r src/resources build/resources
 
 clean :
