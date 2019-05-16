@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "wm/wm.h"
 
@@ -31,7 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *lpCmdLine
 #ifdef M_WINDOW_STATE_X11
 	int main() {
 #endif
-	printf("Initialized\n");
+	printf("Initialized, pid: %d\n", getpid());
 	char *msg = "Hello, World!";
 	WINDOW_STATE *wstate = construct_window_state((WINDOW_STATE_OPTIONS){
 		.width = 100,
@@ -90,8 +91,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *lpCmdLine
 		} else {
 			// empty event
 		}
+
+		free_mwsevent(evt);
 	}
 	printf("End of program\n");
+	free_window_state(wstate);
 	return 0;
 
 #ifdef M_WINDOW_STATE_W32_D2D

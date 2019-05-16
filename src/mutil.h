@@ -101,7 +101,8 @@ void vname##_add (sname* list, rtype data); \
 void vname##_reverse (sname* list); \
 void vname##_free (sname* list); \
 sname##_node* vname##_shift (sname* list); \
-sname##_node* vname##_pop (sname* list);
+sname##_node* vname##_pop (sname* list); \
+void vname##_free_all_nodes (sname* list);
 
 
 #define CREATE_MLINKEDLIST(sname, vname, rtype) sname##_node* create_##vname##_node (rtype data) { \
@@ -160,6 +161,16 @@ sname##_node* vname##_pop (sname* list) { \
 		prev->next = NULL; \
 	} \
 	return current; \
+} \
+void vname##_free_all_nodes (sname* list) { \
+	sname##_node* current = list->head; \
+	while (current != NULL) { \
+		if (current != NULL) { \
+			sname##_node* temp = current; \
+			current = current->next; \
+			free(temp); \
+		} \
+	} \
 }
 
 #endif

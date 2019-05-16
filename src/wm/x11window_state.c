@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int x11_error_handler (Display* d, XErrorEvent* e) {
+	printf("X11-Error: %d\n", (int)e->error_code);
+	return 0;
+}
+
 WINDOW_STATE* construct_window_state_simple (int width, int height) {
 	WINDOW_STATE_OPTIONS opts = window_state_options_defaults();
 	opts.width = width;
@@ -10,12 +15,14 @@ WINDOW_STATE* construct_window_state_simple (int width, int height) {
 }
 
 WINDOW_STATE* construct_window_state (WINDOW_STATE_OPTIONS opts) {
+	printf("Window State sizeof: %ld\n", sizeof(WINDOW_STATE));
 	WINDOW_STATE* wstate = (WINDOW_STATE*) malloc(sizeof(WINDOW_STATE));
 	if (wstate == NULL) {
 		return NULL;
 	}
 
 	wstate->wm_delete_window = None;
+	wstate->got_first_event = false;
 
 	dlist_init(&(wstate->dlist));
 	init_mwslist(&(wstate->events));
@@ -53,7 +60,7 @@ WINDOW_STATE* construct_window_state (WINDOW_STATE_OPTIONS opts) {
 	);
 
 	long flags = 0;
-	printf("Event flags: %d\n", wstate->event_flags);
+	printf("Event flags: %ld\n", wstate->event_flags);
 	if (wstate->event_flags & F_MWS_DRAW) {
 		printf("Adding draw flag\n");
 		flags |= ExposureMask;
@@ -80,17 +87,20 @@ WINDOW_STATE* construct_window_state (WINDOW_STATE_OPTIONS opts) {
 	}
 
 	// Makes so KeyRelease's only happen once
+	// TODO: think if this should be an option
 	XkbSetDetectableAutoRepeat(wstate->dis, true, NULL);
 
 	return wstate;
 }
 void free_window_state (WINDOW_STATE* wstate) {
 	// TODO: do I need to free the dlist items
-	XFreeGC(wstate->dis, wstate->gc);
-	XDestroyWindow(wstate->dis, wstate->win);
+	//XFreeGC(wstate->dis, wstate->gc);
+	//XDestroyWindow(wstate->dis, wstate->win);
 	XCloseDisplay(wstate->dis);
 
-	free(wstate->dis);
+	//free(wstate->dis);
+	dlist_free(&(wstate->dlist));
+	mwslist_free_all_nodes(&(wstate->events));
 	free(wstate);
 }
 // For debugging
@@ -111,7 +121,7 @@ void print_window_state (WINDOW_STATE* ws) {
 			"dlist: %ld size, %ld capacity\n"
 		"}\n",
 		ws->dis == NULL ? "NULL" : "NON-NULL",
-		ws->cur_event.type,
+		ws->got_first_event ? ws->cur_event.type : 0,
 		ws->screen,
 		ws->t_width,
 		ws->t_height,
@@ -136,6 +146,7 @@ void update_window_state_position (WINDOW_STATE* wstate, int x, int y) {
 
 void update_window_state_with_next_event (WINDOW_STATE* wstate) {
 	XNextEvent(wstate->dis, &wstate->cur_event);
+	wstate->got_first_event = true;
 }
 
 // TODO: perhaps store them as longs?
@@ -211,6 +222,7 @@ MWS_EVENT create_full_mwsevent (MWS_EVENT_TYPE type, XEvent xevt) {
 	MWS_EVENT evt = create_mwsevent(type);
 	if (evt.raw == NULL) {
 		evt.raw = (WINDOW_STATE_RAW_EVENT*) malloc(sizeof(WINDOW_STATE_RAW_EVENT));
+		//printf("\traw: %p\n", evt.raw);
 	}
 	// TODO: make sure this has nothing that will be overwritten when you update the event
 	// to make sure that saving this won't cause issues
@@ -240,6 +252,7 @@ MWS_EVENT get_window_state_event (WINDOW_STATE* wstate) {
 		// We're obligated to free the node if we shift it off.
 		free(node);
 		window_state_event_forced_handler(wstate, &retevt);
+		// The person using this is obligated to free the event
 		return retevt;
 	}
 }

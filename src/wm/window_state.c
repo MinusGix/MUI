@@ -54,7 +54,10 @@ void free_mwsevent (MWS_EVENT evt) {
 	if (evt.raw != NULL) {
 		// TODO: possibly a flag which decides if it should include raw events in the struct?
 		// If you don't need them, then why include them?
+		//printf("\t free: %p\n", evt.raw);
 		free(evt.raw);
+		// Set to NULL just in case they still use it
+		evt.raw = NULL;
 	}
 }
 

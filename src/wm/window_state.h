@@ -102,7 +102,6 @@ void window_state_do_event_default (WINDOW_STATE* wstate, MWS_EVENT evt);
 MWS_EVENT create_mwsevent (MWS_EVENT_TYPE type);
 void free_mwsevent (MWS_EVENT evt);
 
-//CREATE_MLIST_HEADER(MWS_EVENT_LIST, mwslist, MWS_EVENT)
 CREATE_MLINKEDLIST_HEADER(MWS_EVENT_LIST, mwslist, MWS_EVENT)
 
 #endif

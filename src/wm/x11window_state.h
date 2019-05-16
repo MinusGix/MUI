@@ -19,7 +19,10 @@
 typedef struct WINDOW_STATE_DATA_t {
 	Display *dis;
 	Window win;
+
+	bool got_first_event;
 	XEvent cur_event;
+	
 	int screen;
 
 	// t_ prefix means tracked, aka this is updated by our code
