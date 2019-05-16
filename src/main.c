@@ -21,7 +21,7 @@ void print_dimensions (WINDOW_STATE* wstate) {
 		get_window_state_ypos(wstate)
 	);
 }
-
+// TODO: I think I can remove these as we don't use winmain..
 #ifdef M_WINDOW_STATE_W32_D2D
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *lpCmdLine, int nCmdShow) {
 #endif

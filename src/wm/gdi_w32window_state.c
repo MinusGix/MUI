@@ -113,24 +113,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 	}
 
 	return DefWindowProc(hwnd, Message, wParam, lParam);
-
-	/*switch(Message) {
-		case WM_CLOSE:
-			printf("[INFO] WndProc WM_CLOSE\n");
-			DestroyWindow(hwnd);
-		break;
-		case WM_DESTROY:
-			printf("[INFO] WndProc WM_DESTROY\n");
-			PostQuitMessage(0);
-		break;
-		case WM_PAINT:
-			printf("WM_PAINT");
-			draw_all(ws);
-		break;
-		default:
-			return DefWindowProc(hwnd, Message, wParam, lParam);
-	}
-	return 0;*/
 }
 
 WINDOW_STATE* construct_window_state (WINDOW_STATE_OPTIONS opts) {
