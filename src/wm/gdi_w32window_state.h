@@ -9,7 +9,7 @@
 
 typedef struct WINDOW_STATE_DATA_t {
 	DrawerList dlist;
-	bool should_exit;
+	bool should_end;
 
 	// Windows parts
 	WNDCLASSEX wc;

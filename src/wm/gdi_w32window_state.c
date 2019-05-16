@@ -140,7 +140,7 @@ WINDOW_STATE* construct_window_state (WINDOW_STATE_OPTIONS opts) {
 	init_mwslist(&(ws->events));
 
 	ws->event_flags = opts.event_flags;
-	ws->should_exit = false;
+	ws->should_end = false;
 
 	ws->wc.cbSize = sizeof(WNDCLASSEX);
 	// Redraw when it is resize
@@ -241,14 +241,14 @@ M_LRect mlrect_from_w32RECT (RECT rect) {
 }
 
 bool should_window_state_end (WINDOW_STATE* wstate) {
-	return wstate->should_exit;
+	return wstate->should_end;
 }
 void window_state_update_tick (WINDOW_STATE* wstate) {
 	if (GetMessage(&(wstate->Msg), NULL, 0, 0) > 0) {
 		TranslateMessage(&(wstate->Msg));
 		DispatchMessage(&(wstate->Msg));
 	} else {
-		wstate->should_exit = true;
+		wstate->should_end = true;
 	}
 }
 void window_state_event_forced_handler (WINDOW_STATE* wstate, MWS_EVENT* evt) {
@@ -273,7 +273,7 @@ void window_state_do_event_default (WINDOW_STATE* wstate, MWS_EVENT evt) {
 	if (evt.type != MWS_NONE) {
 		if (evt.raw->Message == WM_CLOSE) {
 			DestroyWindow(wstate->hwnd);
-			wstate->should_exit = true;
+			wstate->should_end = true;
 			// WM_DESTROY is handled in wndproc
 		}
 		DefWindowProc(wstate->hwnd, evt.raw->Message, evt.raw->wParam, evt.raw->lParam);
