@@ -14,12 +14,12 @@
 */
 
 void print_dimensions (WINDOW_STATE* wstate) {
-	/*printf("w/h x/y: %ldx%ld (%ld, %ld)\n",
+	printf("w/h x/y: %ldx%ld (%ld, %ld)\n",
 		get_window_state_width(wstate),
 		get_window_state_height(wstate),
 		get_window_state_xpos(wstate),
 		get_window_state_ypos(wstate)
-	);*/
+	);
 }
 
 #ifdef M_WINDOW_STATE_W32_D2D
@@ -31,6 +31,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *lpCmdLine
 #ifdef M_WINDOW_STATE_X11
 	int main() {
 #endif
+	printf("Initialized\n");
 	char *msg = "Hello, World!";
 	WINDOW_STATE *wstate = construct_window_state((WINDOW_STATE_OPTIONS){
 		.width = 100,
@@ -43,7 +44,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *lpCmdLine
 	});
 
 	if (wstate == NULL) {
-		fprintf(stderr, "Err in opening display.");
+		printf("ERR IN OPENING DISPLAY\n");
 		return 1;
 	}
 

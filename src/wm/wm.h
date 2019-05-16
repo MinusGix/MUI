@@ -4,8 +4,6 @@
 //	#ifndef
 //#endif
 
-#include "window_state.h"
-
 // TODO: make these exclusive, so only one will be required ( needs something like elseifdef )
 #ifdef M_WINDOW_STATE_X11
 	#include "x11window_state.h"

@@ -280,6 +280,7 @@ void window_state_do_event_default (WINDOW_STATE* wstate, MWS_EVENT evt) {
 			DestroyWindow(wstate->hwnd);
 			wstate->should_end = true;
 			// WM_DESTROY is handled in wndproc
+			return;
 		}
 		DefWindowProc(wstate->hwnd, evt.raw->Message, evt.raw->wParam, evt.raw->lParam);
 	}
