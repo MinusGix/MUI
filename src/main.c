@@ -72,7 +72,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *lpCmdLine
 	});
 
 	while (window_state_updater(wstate)) {
-		printf("should_end: %d\n", wstate->should_end);
 		MWS_EVENT evt = get_window_state_event(wstate);
 
 		if (evt.type == MWS_DRAW) {
