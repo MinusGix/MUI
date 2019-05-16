@@ -39,7 +39,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *lpCmdLine
 		.x = 10,
 		.y = 10,
 		.border_width = 1,
-		.event_flags = F_MWS_DRAW | F_MWS_CLOSE_WINDOW,
+		.event_flags = F_MWS_DRAW | F_MWS_CLOSE_WINDOW | F_MWS_MOUSE_MOVE,
 		.title = "Reality"
 	});
 
@@ -80,6 +80,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *lpCmdLine
 			draw_all(wstate);
 		} else if (evt.type == MWS_CLOSE_WINDOW) {
 			printf("MWS_CLOSE_WINDOW\n");
+			window_state_do_event_default(wstate, evt);
+		} else if (evt.type == MWS_MOUSE_MOVE) {
+			printf("MWS_MOUSE_MOVE (%d, %d)\n", evt.emouse_move.x, evt.emouse_move.y);
 			window_state_do_event_default(wstate, evt);
 		} else if (evt.type != MWS_NONE) {
 			printf("Defaulted event: %d\n", (int)evt.type);

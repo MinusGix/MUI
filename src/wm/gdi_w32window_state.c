@@ -90,20 +90,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 	//printf("ws: %p, id: %#3X\n", ws, Message);
 
 	if (Message == WM_PAINT && (ws->event_flags & F_MWS_DRAW)) {
-		//printf("WM_PAINT\n");
 		mwslist_add(&(ws->events), create_full_mwsevent(MWS_DRAW, Message, wParam, lParam));
-		//printf("\tmwslist, head: %p, next: %p\n", ws->events.head, ws->events.head == NULL ? NULL : ws->events.head);
 		return 0;
 	} else if (Message == WM_CLOSE) {
-		printf("MAIN WM_CLOSE\n");
 		if (ws->event_flags & F_MWS_CLOSE_WINDOW) {
-			printf("ADDING WM_CLOSE TO EVENTS LIST\n");
 			mwslist_add(&(ws->events), create_full_mwsevent(MWS_CLOSE_WINDOW, Message, wParam, lParam));
 		} else {
-			printf("DOING WM_CLOSE DEFAULT");
 			window_state_do_event_default(ws, create_full_mwsevent(MWS_CLOSE_WINDOW, Message, wParam, lParam));
 		}
 		return 0;
+	} else if (Message == WM_MOUSEMOVE && (ws->event_flags & F_MWS_MOUSE_MOVE)) {
+		MWS_EVENT event = create_full_mwsevent(MWS_MOUSE_MOVE, Message, wParam, lParam);
+
+		event.emouse_move.x = GET_X_LPARAM(lParam);
+		event.emouse_move.y = GET_Y_LPARAM(lParam);
+
+		mwslist_add(&(ws->events), event);
 	} else if (Message == WM_DESTROY) {
 		printf("[INFO] WndProc WM_DESTROY\n");
 		PostQuitMessage(0);

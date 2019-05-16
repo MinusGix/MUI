@@ -43,7 +43,7 @@ typedef struct WINDOW_STATE_DATA_t {
 
 	// Note: we store wm_delete_window the windowstate as I don't know if it's window-specific.
 	// Default is `None`
-	Atom* wm_delete_window;
+	Atom wm_delete_window;
 } WINDOW_STATE;
 
 typedef struct WINDOW_STATE_RAW_EVENT_t {

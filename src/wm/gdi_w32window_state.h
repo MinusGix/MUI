@@ -2,7 +2,7 @@
 #define FILE_M_W32GDIWINDOWSTATE
 
 #include <windows.h>
-
+#include <windowsx.h>
 #include "window_state.h"
 #include "../mutil.h"
 #include "drawer.h"

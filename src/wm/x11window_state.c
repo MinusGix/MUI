@@ -53,10 +53,16 @@ WINDOW_STATE* construct_window_state (WINDOW_STATE_OPTIONS opts) {
 	);
 
 	long flags = 0;
-
+	printf("Event flags: %d\n", wstate->event_flags);
 	if (wstate->event_flags & F_MWS_DRAW) {
+		printf("Adding draw flag\n");
 		flags |= ExposureMask;
 	}
+	if (wstate->event_flags & F_MWS_MOUSE_MOVE) {
+		printf("Adding mouse move flag\n");
+		flags |= PointerMotionMask;
+	}
+	printf("Flags: %ld\n", flags);
 
 	XSelectInput(
 		wstate->dis,
@@ -66,10 +72,11 @@ WINDOW_STATE* construct_window_state (WINDOW_STATE_OPTIONS opts) {
 	XMapWindow(wstate->dis, wstate->win);
 
 	if (wstate->event_flags & F_MWS_CLOSE_WINDOW) {
+		printf("Adding close window flag and handling\n");
 		// Seems to have to be done after selectinput/mapwindow
 		// See: https://stackoverflow.com/questions/1157364/intercept-wm-delete-window-on-x11
 		wstate->wm_delete_window = XInternAtom(wstate->dis, "WM_DELETE_WINDOW", False);
-		XSetWMProtocols(wstate->dis, wstate->win, &wstate->wm_delete_window, 1);
+		XSetWMProtocols(wstate->dis, wstate->win, &(wstate->wm_delete_window), 1);
 	}
 
 	// Makes so KeyRelease's only happen once
@@ -192,6 +199,11 @@ void window_state_update_tick (WINDOW_STATE* wstate) {
 		if ((Atom)evt.xclient.data.l[0] == wstate->wm_delete_window) {
 			mwslist_add(&(wstate->events), create_full_mwsevent(MWS_CLOSE_WINDOW, wstate->cur_event));
 		}
+	} else if (etype == MotionNotify) {
+		MWS_EVENT event = create_full_mwsevent(MWS_MOUSE_MOVE, wstate->cur_event);
+		event.emouse_move.x = wstate->cur_event.xmotion.x;
+		event.emouse_move.y = wstate->cur_event.xmotion.y;
+		mwslist_add(&(wstate->events), event);
 	}
 	// TODO: add close event
 }

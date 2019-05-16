@@ -44,15 +44,24 @@ typedef enum MWS_EVENT_TYPE_t {
 	MWS_UK,
 	// Draw to the screen
 	MWS_DRAW,
-	MWS_CLOSE_WINDOW
+	MWS_CLOSE_WINDOW,
+	MWS_MOUSE_MOVE
 } MWS_EVENT_TYPE;
+typedef struct MWSE_MOUSE_MOVE_t {
+	int x;
+	int y;
+} MWSE_MOUSE_MOVE;
 typedef struct MWS_EVENT_t {
 	MWS_EVENT_TYPE type;
+	union {
+		MWSE_MOUSE_MOVE emouse_move;
+	};
 	WINDOW_STATE_RAW_EVENT* raw;
 } MWS_EVENT;
 
 #define F_MWS_DRAW (1<<0) // 1
 #define F_MWS_CLOSE_WINDOW (1<<1) // 10
+#define F_MWS_MOUSE_MOVE (1<<2) // 100
 
 
 
