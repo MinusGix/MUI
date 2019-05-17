@@ -258,9 +258,7 @@ MWS_EVENT get_window_state_event (WINDOW_STATE* wstate) {
 }
 void window_state_do_event_default (WINDOW_STATE* wstate, MWS_EVENT evt) {
 	if (evt.type != MWS_NONE) {
-		printf("DEFAULT EVENT HANDLER %d\n", evt.raw->Message);
 		if (evt.raw->Message == WM_CLOSE) {
-			printf("\tEVENT DEFAULT WM_CLOSE\n");
 			DestroyWindow(wstate->hwnd);
 			wstate->should_end = true;
 			// WM_DESTROY is handled in wndproc

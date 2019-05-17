@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *lpCmdLine
 			printf("MWS_CLOSE_WINDOW\n");
 			window_state_do_event_default(wstate, evt);
 		} else if (evt.type == MWS_MOUSE_MOVE) {
-			printf("MWS_MOUSE_MOVE (%d, %d)\n", evt.emouse_move.x, evt.emouse_move.y);
+			//printf("MWS_MOUSE_MOVE (%d, %d)\n", evt.emouse_move.x, evt.emouse_move.y);
 			window_state_do_event_default(wstate, evt);
 		} else if (evt.type != MWS_NONE) {
 			printf("Defaulted event: %d\n", (int)evt.type);

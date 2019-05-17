@@ -69,6 +69,7 @@ bool window_state_updater (WINDOW_STATE* wstate) {
 	// 1. Updating the tick on a purposely dead window is possibly bad
 	// 2. x11 likes waiting for event if there is none, which means if we kill the window it will wait for nothing.
 	if (should_window_state_end(wstate)) {
+		printf("EEE\n");
 		return false;
 	}
 	window_state_update_tick(wstate);

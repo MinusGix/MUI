@@ -93,9 +93,6 @@ WINDOW_STATE* construct_window_state (WINDOW_STATE_OPTIONS opts) {
 	return wstate;
 }
 void free_window_state (WINDOW_STATE* wstate) {
-	// TODO: do I need to free the dlist items
-	//XFreeGC(wstate->dis, wstate->gc);
-	//XDestroyWindow(wstate->dis, wstate->win);
 	XCloseDisplay(wstate->dis);
 
 	//free(wstate->dis);
