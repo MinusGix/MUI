@@ -94,18 +94,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 		return 0;
 	} else if (Message == WM_CLOSE) {
 		if (ws->event_flags & F_MWS_CLOSE_WINDOW) {
+			printf("listening for close window, adding\n");
 			mwslist_add(&(ws->events), create_full_mwsevent(MWS_CLOSE_WINDOW, Message, wParam, lParam));
 		} else {
+			printf("not listening for close window.\n");
 			window_state_do_event_default(ws, create_full_mwsevent(MWS_CLOSE_WINDOW, Message, wParam, lParam));
 		}
 		return 0;
-	} else if (Message == WM_MOUSEMOVE && (ws->event_flags & F_MWS_MOUSE_MOVE)) {
-		MWS_EVENT event = create_full_mwsevent(MWS_MOUSE_MOVE, Message, wParam, lParam);
+	} else if (Message == WM_MOUSEMOVE) {
+		if (ws->event_flags & F_MWS_MOUSE_MOVE) {
+			MWS_EVENT event = create_full_mwsevent(MWS_MOUSE_MOVE, Message, wParam, lParam);
 
-		event.emouse_move.x = GET_X_LPARAM(lParam);
-		event.emouse_move.y = GET_Y_LPARAM(lParam);
+			event.emouse_move.x = GET_X_LPARAM(lParam);
+			event.emouse_move.y = GET_Y_LPARAM(lParam);
 
-		mwslist_add(&(ws->events), event);
+			mwslist_add(&(ws->events), event);
+		}
 	} else if (Message == WM_DESTROY) {
 		printf("[INFO] WndProc WM_DESTROY\n");
 		PostQuitMessage(0);
@@ -183,6 +187,9 @@ void free_window_state (WINDOW_STATE* wstate) {
 	// TODO: do I need to free the dlist items
 	DeleteObject(wstate->defaultPen);
 	DeleteObject(wstate->defaultBrush);
+
+	dlist_free(&(wstate->dlist));
+	mwslist_free_all_nodes(&(wstate->events));
 	free(wstate);
 }
 
@@ -231,12 +238,15 @@ bool should_window_state_end (WINDOW_STATE* wstate) {
 	return wstate->should_end;
 }
 void window_state_update_tick (WINDOW_STATE* wstate) {
-	if (GetMessage(&(wstate->Msg), NULL, 0, 0) > 0) {
+	BOOL res = PeekMessage(&(wstate->Msg), NULL, 0, 0, PM_REMOVE);;
+	// TODO: with peek message it will return even if there isn't a message, we coul use this to provide empty events if we wanted too
+	if (res != 0) { // nonzero = message is available
+	//if (GetMessage(&(wstate->Msg), NULL, 0, 0) > 0) {
 		TranslateMessage(&(wstate->Msg));
 		DispatchMessage(&(wstate->Msg));
-	} else {
-		wstate->should_end = true;
-	}
+	}// else {
+	//	wstate->should_end = true;
+	//}
 }
 void window_state_event_forced_handler (WINDOW_STATE* wstate, MWS_EVENT* evt) {
 	// noop
